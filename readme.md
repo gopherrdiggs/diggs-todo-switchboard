@@ -4,6 +4,9 @@ This actual "To-Do" example application is a progressive web app built using Ste
 
 The purpose of the project, however, is to attempt and refine application state management using a pattern I'm calling a "switchboard."
 
+As a visual overview, here's what I'm trying to achieve with this pattern:
+![switchboard overview](/src/assets/switchboard-overview.png)
+
 ## Project Goals
 
 * Web Component Reusability
