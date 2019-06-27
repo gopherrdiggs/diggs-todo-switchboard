@@ -1,12 +1,14 @@
 import { ITodoItemList, ITodoItem } from "../interfaces/app-interfaces";
 import { SwitchboardOperator } from "./switchboard-operator";
+import { ToastService } from "../services/toast-service";
 
-//TODO: Remove from ../interfaces/app-interfaces
 interface IAppState {
   incompleteTodos: ITodoItemList,
   completeTodos: ITodoItemList
 }
-// as app state grows, decompose this interface along with domain-specific controllers
+
+// As app state grows, decompose this interface into 
+// domain-specific controllers, along with correspond state sub-objects.
 
 export var AppState = {} as IAppState;
 
@@ -21,6 +23,7 @@ class AppStateActionController {
 
     console.log("Initializing app state controller...");
     await this.getInitialAppState();
+
   }
 
   async getInitialAppState() {
@@ -64,6 +67,7 @@ class AppStateActionController {
         AppState.completeTodos.items.length;
       // Execute element callbacks associated with action
       SwitchboardOperator.executeElementCallbacksForStateAction(Actions.todoItemChecked);
+      ToastService.showSuccessToast("Well done!");
     }
     else {
       // Remove item from complete items list
@@ -80,6 +84,7 @@ class AppStateActionController {
         AppState.incompleteTodos.items.length;
       // Execute element callbacks associated with action
       SwitchboardOperator.executeElementCallbacksForStateAction(Actions.todoItemUnchecked);
+      ToastService.showSuccessToast("Okay, bringing it back.")
     }
   }
   

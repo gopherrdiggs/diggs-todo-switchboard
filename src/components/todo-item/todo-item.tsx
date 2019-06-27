@@ -6,7 +6,8 @@ import { ITodoItem } from "../../interfaces/app-interfaces";
 })
 export class TodoItem {
 
-  @Event() onItemCheckedChanged: EventEmitter;
+  @Event() onTodoItemChecked: EventEmitter;
+  @Event() onTodoItemUnchecked: EventEmitter;
 
   @Prop() todo: ITodoItem;
 
@@ -17,7 +18,7 @@ export class TodoItem {
     this._todo = this.todo;
   }
 
-  async handleItemChecked() {
+  async handleItemCheckedChanged() {
 
     this._todo = {
       ...this._todo,
@@ -27,7 +28,14 @@ export class TodoItem {
     // Give time for check animation to happen
     await new Promise(resolve => setTimeout(resolve, 400));
 
-    this.onItemCheckedChanged.emit({ item: this._todo });
+    if (this._todo.isComplete) {
+
+      this.onTodoItemChecked.emit({ item: this._todo });
+    }
+    else {
+
+      this.onTodoItemUnchecked.emit({ item: this._todo });
+    }
   }
 
   render() {
@@ -35,7 +43,7 @@ export class TodoItem {
 
       <ion-item>
         <ion-checkbox slot='start' checked={this._todo.isComplete}
-          onIonChange={() => this.handleItemChecked()} />
+          onIonChange={() => this.handleItemCheckedChanged()} />
         <ion-label style={{
           fontStyle: this._todo.isComplete ? 'italic' : 'normal'
         }}>

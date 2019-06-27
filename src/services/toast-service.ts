@@ -1,21 +1,13 @@
 class ToastController {
 
-  toastCtrl: HTMLIonToastControllerElement;
-
-  constructor() {
-    this.toastCtrl = document.querySelector('ion-toast-controller');
-  }
-
-  getController() {
-    return this.toastCtrl;
-  }
-
   async showSuccessToast(
     message: string = 'Operation succeeded', 
     position: 'bottom' | 'top' | 'middle' = 'bottom', 
     duration: number = 1000) {
 
-    let toast = await this.toastCtrl.create({
+    const toastController = document.querySelector('ion-toast-controller');
+
+    let toast = await toastController.create({
       message: message,
       duration: duration,
       position: position,
@@ -30,7 +22,9 @@ class ToastController {
     position: 'bottom' | 'top' | 'middle' = 'bottom', 
     duration: number = 3000) {
 
-    let toast = await this.toastCtrl.create({
+    const toastController = document.querySelector('ion-toast-controller');
+  
+    let toast = await toastController.create({
       message: message,
       duration: duration,
       position: position,

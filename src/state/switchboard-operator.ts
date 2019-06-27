@@ -92,10 +92,9 @@ class SwitchboardController {
     // Set up event listener on root element provided
     this.rootElement.addEventListener(eventName, (event: any) => {
       console.log("Event occurred: ", event);
-      //NOTE: The following works, but I need make HTMLTodoListElement create the event
-      // if (sourceElementId) {
-        // if (!event.target || event.target.id != sourceElementId) return;
-      // }
+      if (sourceElementId) {
+        if (!event.target || event.target.id != sourceElementId) return;
+      }
 
       console.log("Calling action handler: ", registration.actionHandler.toString());
       registration.actionHandler(event);
@@ -110,7 +109,8 @@ class SwitchboardController {
     });
 
     if (!actionRegistration) {
-      throw new Error("ERROR: Unable to find registration for action: " + actionName);
+      return; //TODO: Revert back to throwing error once elements are un-registered when removed from DOM
+      // throw new Error("ERROR: Unable to find registration for action: " + actionName);
     }
 
     for (let method of actionRegistration.elementMethods) {

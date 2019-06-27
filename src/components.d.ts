@@ -88,10 +88,13 @@ declare namespace LocalJSX {
   interface CompletedItems extends JSXBase.HTMLAttributes<HTMLCompletedItemsElement> {}
   interface TodoAdd extends JSXBase.HTMLAttributes<HTMLTodoAddElement> {}
   interface TodoItem extends JSXBase.HTMLAttributes<HTMLTodoItemElement> {
-    'onOnItemCheckedChanged'?: (event: CustomEvent<any>) => void;
+    'onOnTodoItemChecked'?: (event: CustomEvent<any>) => void;
+    'onOnTodoItemUnchecked'?: (event: CustomEvent<any>) => void;
     'todo'?: ITodoItem;
   }
-  interface TodoList extends JSXBase.HTMLAttributes<HTMLTodoListElement> {}
+  interface TodoList extends JSXBase.HTMLAttributes<HTMLTodoListElement> {
+    'onOnTodoItemCheckedChanged'?: (event: CustomEvent<any>) => void;
+  }
   interface ToolbarBadge extends JSXBase.HTMLAttributes<HTMLToolbarBadgeElement> {}
 
   interface IntrinsicElements {

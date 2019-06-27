@@ -1,4 +1,4 @@
-import { Component, h, State, Method } from "@stencil/core";
+import { Component, h, Event, EventEmitter, Listen, State, Method } from "@stencil/core";
 import { ITodoItem } from "../../interfaces/app-interfaces";
 
 
@@ -7,12 +7,21 @@ import { ITodoItem } from "../../interfaces/app-interfaces";
 })
 export class TodoList {
 
+  @Event() onTodoItemCheckedChanged: EventEmitter;
+
   @State() _todos: ITodoItem[] = [];
 
   @Method()
   async setTodos(todos: ITodoItem[]) {
 
     this._todos = todos;
+  }
+
+  @Listen('onTodoItemChecked', { target: 'document' })
+  @Listen('onTodoItemUnchecked', { target: 'document' })
+  async handleTodoItemChecked(event: any) {
+
+    this.onTodoItemCheckedChanged.emit({ item: event.detail.item })
   }
 
   render() {

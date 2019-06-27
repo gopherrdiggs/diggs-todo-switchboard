@@ -38,7 +38,7 @@ export class AppRoot {
         const list = element as HTMLTodoListElement;
         // Events => Actions
         SwitchboardOperator.registerElementEventToStateActionHandler(
-          'onItemCheckedChanged', 
+          'onTodoItemCheckedChanged', 
           (e) => AppStateController.handleTodoItemCheckedChanged(e),
           list.id
         );
@@ -61,7 +61,7 @@ export class AppRoot {
         const list = element as HTMLTodoListElement;
         // Events => Actions
         SwitchboardOperator.registerElementEventToStateActionHandler(
-          'onItemCheckedChanged', 
+          'onTodoItemCheckedChanged', 
           (e) => AppStateController.handleTodoItemCheckedChanged(e),
           list.id
         );
