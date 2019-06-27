@@ -71,7 +71,8 @@ class SwitchboardController {
     });
 
     if (registration) {
-      throw new Error("ERROR: Event registered to action handler more than once. Did you mean to register events based on element IDs?");
+      return; //TODO: Revert back to throwing error once elements are un-registered when removed from DOM
+      // throw new Error("ERROR: Event registered to action handler more than once. Did you mean to register events based on element IDs?");
     }
 
     // Registry entry does not exist, create it.
@@ -109,8 +110,7 @@ class SwitchboardController {
     });
 
     if (!actionRegistration) {
-      return; //TODO: Revert back to throwing error once elements are un-registered when removed from DOM
-      // throw new Error("ERROR: Unable to find registration for action: " + actionName);
+      throw new Error("ERROR: Unable to find registration for action: " + actionName);
     }
 
     for (let method of actionRegistration.elementMethods) {
