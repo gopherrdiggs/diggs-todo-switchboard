@@ -50,8 +50,13 @@ class AppStateActionController {
 
   handleTodoItemCreated(event: any) {
 
+    console.log("Item added event: ", event);
+
     let item = event.detail.item as ITodoItem;
 
+    if (!item) {
+      throw new Error("Event did not contain expected item");
+    }
     console.log('item added: ', item);
     AppState.incompleteTodos.items =
         [...AppState.incompleteTodos.items, item];

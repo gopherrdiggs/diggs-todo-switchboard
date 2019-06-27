@@ -1,6 +1,7 @@
 import { Component, h, State } from "@stencil/core";
 import { ModalService } from "../../services/modal-service";
 import { ITodoItem } from "../../interfaces/app-interfaces";
+import { generateUniqueId } from "../../helpers/utils";
 
 @Component({
   tag: 'todo-add'
@@ -16,7 +17,12 @@ export class TodoAdd {
 
   async handleSaveClick() {
 
-    await ModalService.getController().dismiss({ item: this._todo });
+    let newTodo = {} as ITodoItem;
+    newTodo.id = generateUniqueId();
+    newTodo.summary = this._todo.summary;
+    newTodo.isComplete = false;
+
+    await ModalService.getController().dismiss({ item: newTodo});
   }
 
   async handleSummaryChange(event: any) {

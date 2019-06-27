@@ -18,14 +18,15 @@ export class AppHome {
       component: 'todo-add'
     });
 
-    await modal.present();
+    modal.onDidDismiss().then((event: any) => {
 
-    modal.onDidDismiss().then((data: any) => {
-
-      if (data) {
-        this.onTodoItemCreated.emit({ item: data.item });
+      if (event.data) {
+        
+        this.onTodoItemCreated.emit({ item: event.data.item });
       }
     });
+
+    await modal.present();
   }
 
   render() {

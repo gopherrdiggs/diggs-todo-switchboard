@@ -51,6 +51,10 @@ export class AppRoot {
           Actions.todoItemUnchecked,
           () => list.setTodos(AppState.incompleteTodos.items)
         );
+        SwitchboardOperator.registerStateActionToElementCallback(
+          Actions.todoItemAdded,
+          () => list.setTodos(AppState.incompleteTodos.items)
+        );
         // Set initial component state
         list.setTodos(AppState.incompleteTodos.items);
         break;
@@ -87,6 +91,10 @@ export class AppRoot {
         );
         SwitchboardOperator.registerStateActionToElementCallback(
           Actions.todoItemUnchecked,
+          () => badge.setContent(AppState.incompleteTodos.count)
+        );
+        SwitchboardOperator.registerStateActionToElementCallback(
+          Actions.todoItemAdded,
           () => badge.setContent(AppState.incompleteTodos.count)
         );
         // Set initial component state
