@@ -83,7 +83,9 @@ declare global {
 }
 
 declare namespace LocalJSX {
-  interface AppHome extends JSXBase.HTMLAttributes<HTMLAppHomeElement> {}
+  interface AppHome extends JSXBase.HTMLAttributes<HTMLAppHomeElement> {
+    'onOnTodoItemCreated'?: (event: CustomEvent<any>) => void;
+  }
   interface AppRoot extends JSXBase.HTMLAttributes<HTMLAppRootElement> {}
   interface CompletedItems extends JSXBase.HTMLAttributes<HTMLCompletedItemsElement> {}
   interface TodoAdd extends JSXBase.HTMLAttributes<HTMLTodoAddElement> {}

@@ -112,6 +112,16 @@ export class AppRoot {
         badge.setContent(AppState.completeTodos.count);
         break;
       }
+
+      case 'addTodoModal': {
+
+        console.log("registering event-action mapping for modal");
+        // Events => Actions
+        SwitchboardOperator.registerElementEventToStateActionHandler(
+          'onTodoItemCreated',
+          (e) => AppStateController.handleTodoItemCreated(e)
+        );
+      }
     }
   }
 

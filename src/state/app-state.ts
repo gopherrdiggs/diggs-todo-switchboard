@@ -13,8 +13,9 @@ interface IAppState {
 export var AppState = {} as IAppState;
 
 export const enum Actions {
-  todoItemChecked= 'todoItemChecked',
-  todoItemUnchecked= 'todoItemUnchecked'
+  todoItemAdded = 'todoItemAdded',
+  todoItemChecked = 'todoItemChecked',
+  todoItemUnchecked = 'todoItemUnchecked'
 }
 
 class AppStateActionController {
@@ -45,6 +46,19 @@ class AppStateActionController {
         count: 1
       }
     }
+  }
+
+  handleTodoItemCreated(event: any) {
+
+    let item = event.detail.item as ITodoItem;
+
+    console.log('item added: ', item);
+    AppState.incompleteTodos.items =
+        [...AppState.incompleteTodos.items, item];
+    AppState.incompleteTodos.count =
+      AppState.incompleteTodos.items.length;
+    // Execute element callbacks associated with action
+    SwitchboardOperator.executeElementCallbacksForStateAction(Actions.todoItemAdded);
   }
 
   handleTodoItemCheckedChanged(event: any) {

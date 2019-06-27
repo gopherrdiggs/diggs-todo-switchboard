@@ -1,4 +1,4 @@
-import { Component, h, State } from '@stencil/core';
+import { Component, h, Event, EventEmitter, State } from '@stencil/core';
 import { ModalService } from '../../services/modal-service';
 
 @Component({
@@ -7,20 +7,23 @@ import { ModalService } from '../../services/modal-service';
 })
 export class AppHome {
 
+  @Event() onTodoItemCreated: EventEmitter;
+
   @State() itemCount: number = 0;
 
   async handleAddClick() {
 
     let modal = await ModalService.getController().create({
+      id: 'addTodoModal',
       component: 'todo-add'
     });
 
     await modal.present();
 
-    modal.onDidDismiss().then(data => {
+    modal.onDidDismiss().then((data: any) => {
 
       if (data) {
-        // Submit todoItemAdded event/action
+        this.onTodoItemCreated.emit({ item: data.item });
       }
     });
   }

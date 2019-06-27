@@ -1,28 +1,27 @@
 import { Component, h, State } from "@stencil/core";
 import { ModalService } from "../../services/modal-service";
-import { ToastService } from "../../services/toast-service";
+import { ITodoItem } from "../../interfaces/app-interfaces";
 
 @Component({
   tag: 'todo-add'
 })
 export class TodoAdd {
 
-  @State() summary: string = '';
+  @State() _todo = {} as ITodoItem;
 
   async handleCloseClick() {
 
     await ModalService.getController().dismiss();
   }
 
-  async handleAddClick() {
+  async handleSaveClick() {
 
-    await ToastService.showSuccessToast('Item added');
-    await ModalService.getController().dismiss();
+    await ModalService.getController().dismiss({ item: this._todo });
   }
 
   async handleSummaryChange(event: any) {
 
-    this.summary = event.target.value;
+    this._todo.summary = event.target.value;
   }
 
   render() {
@@ -40,7 +39,7 @@ export class TodoAdd {
           </ion-title>
           <ion-buttons slot='end'>
             <ion-button color='primary' fill='solid' shape='round'
-                        onClick={()=>this.handleAddClick()}>
+                        onClick={()=>this.handleSaveClick()}>
               <ion-icon slot='icon-only' name='checkmark' />
             </ion-button>
           </ion-buttons>
@@ -51,7 +50,7 @@ export class TodoAdd {
           <ion-label position='stacked'>
             Summary
           </ion-label>
-          <ion-input type='text' value={this.summary}
+          <ion-input type='text' value={this._todo.summary}
                      onIonChange={(e)=>this.handleSummaryChange(e)} />
         </ion-item>
       </ion-content>
