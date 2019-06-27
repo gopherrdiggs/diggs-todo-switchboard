@@ -35,6 +35,14 @@ class SwitchboardController {
     this.rootElement = rootElement;
   }
 
+  async registerStateActionsToElementCallback(
+    actionNames: string[], method: Function) {
+    
+    for (let actionName of actionNames) {
+      await this.registerStateActionToElementCallback(actionName, method);
+    }
+  }
+
   // Add to the list of callback functions/methods that are called when an action occurs.
   async registerStateActionToElementCallback(
     actionName: string, method: Function) {
@@ -55,8 +63,16 @@ class SwitchboardController {
       });
     }
 
-    //TODO: Find a way to ensure the exact same method is not registered more than once.
+    //TODO: Ensure the exact same method is not registered more than once.
     registration.elementMethods.push(method);
+  }
+
+  async registerElementEventsToStateActionHandler(
+    eventNames: string[], handler: Function, sourceElementId?: string) {
+    
+    for (let eventName of eventNames) {
+      await this.registerElementEventToStateActionHandler(eventName, handler, sourceElementId);
+    }
   }
 
   // Configure which action handler is called when an event occurs.

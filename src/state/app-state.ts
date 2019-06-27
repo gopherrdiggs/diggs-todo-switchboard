@@ -7,15 +7,16 @@ interface IAppState {
   completeTodos: ITodoItemList
 }
 
-// As app state grows, decompose this interface into 
-// domain-specific controllers, along with correspond state sub-objects.
+// As app state grows, the plan is to split this interface into 
+// domain-specific controllers, along with corresponding state sub-objects.
 
 export var AppState = {} as IAppState;
 
 export const enum Actions {
   todoItemAdded = 'todoItemAdded',
   todoItemChecked = 'todoItemChecked',
-  todoItemUnchecked = 'todoItemUnchecked'
+  todoItemUnchecked = 'todoItemUnchecked',
+  todoItemDeleted = 'todoItemDeleted'
 }
 
 class AppStateActionController {
@@ -50,14 +51,13 @@ class AppStateActionController {
 
   handleTodoItemCreated(event: any) {
 
-    console.log("Item added event: ", event);
-
+    console.log("Handling todoItemAdded event: ", event);
     let item = event.detail.item as ITodoItem;
 
     if (!item) {
       throw new Error("Event did not contain expected item");
     }
-    console.log('item added: ', item);
+
     AppState.incompleteTodos.items = [...AppState.incompleteTodos.items, item];
     AppState.incompleteTodos.count = AppState.incompleteTodos.items.length;
     // Execute element callbacks associated with action
@@ -68,6 +68,10 @@ class AppStateActionController {
 
     console.log('Handling todoItemCheckedChanged event: ', event);
     let item = event.detail.item as ITodoItem;
+
+    if (!item) {
+      throw new Error("Event did not contain expected item");
+    }
 
     if (item.isComplete) {
       // Remove item from incomplete items list
@@ -83,7 +87,7 @@ class AppStateActionController {
       AppState.completeTodos.count = AppState.completeTodos.items.length;
       // Execute element callbacks associated with action
       SwitchboardOperator.executeElementCallbacksForStateAction(Actions.todoItemChecked);
-      ToastService.showSuccessToast("Well done!");
+      ToastService.showSuccessToast("Well done!", "top");
     }
     else {
       // Remove item from complete items list
@@ -99,11 +103,34 @@ class AppStateActionController {
       AppState.incompleteTodos.count = AppState.incompleteTodos.items.length;
       // Execute element callbacks associated with action
       SwitchboardOperator.executeElementCallbacksForStateAction(Actions.todoItemUnchecked);
-      ToastService.showSuccessToast("Okay, bringing it back.")
+      ToastService.showSuccessToast("Okay, bringing it back.", "top")
     }
   }
   
-  
+  handleTodoItemDeleted(event: any) {
+
+    console.log("Handling todoItemDeleted event: ", event);
+    let item = event.detail.item as ITodoItem;
+
+    if (!item) {
+      throw new Error("Event did not contain expected item");
+    }
+
+    // Remove item from incomplete items list
+    AppState.incompleteTodos.items =
+      AppState.incompleteTodos.items.filter(i => {
+        return i.id != item.id;
+      });
+    AppState.incompleteTodos.count = AppState.incompleteTodos.items.length;
+    // Remove item from complete items list
+    AppState.completeTodos.items =
+      AppState.completeTodos.items.filter(i => {
+        return i.id != item.id;
+      });
+    AppState.completeTodos.count = AppState.completeTodos.items.length;
+    // Execute element callbacks associated with action
+    SwitchboardOperator.executeElementCallbacksForStateAction(Actions.todoItemDeleted);
+  }
 
 }
 

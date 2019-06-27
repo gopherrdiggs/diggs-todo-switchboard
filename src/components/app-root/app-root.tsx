@@ -16,7 +16,7 @@ export class AppRoot {
     SwitchboardOperator.setRootElement(this.el);
   }
 
-  // As elements are added to the DOM, this method picks out certain ones, identified by the element's ID property,
+  // As elements are added to the DOM, this handler picks out certain ones, identified by the element's ID property,
   // then registers Events=>Actions and Actions=>Methods mappings for the element (web component)
   // Obviously, the registration of all these elements and callbacks doesn't scale well for a single file like this,
   // so any ideas on how to organize this logic - maybe based on domain - would be appreciated.
@@ -42,17 +42,15 @@ export class AppRoot {
           (e) => AppStateController.handleTodoItemCheckedChanged(e),
           list.id
         );
+        SwitchboardOperator.registerElementEventToStateActionHandler(
+          'onTodoItemDeleted',
+          (e) => AppStateController.handleTodoItemDeleted(e),
+          list.id
+        );
         // Actions => Methods
-        SwitchboardOperator.registerStateActionToElementCallback(
-          Actions.todoItemChecked,
-          () => list.setTodos(AppState.incompleteTodos.items)
-        );
-        SwitchboardOperator.registerStateActionToElementCallback(
-          Actions.todoItemUnchecked,
-          () => list.setTodos(AppState.incompleteTodos.items)
-        );
-        SwitchboardOperator.registerStateActionToElementCallback(
-          Actions.todoItemAdded,
+        SwitchboardOperator.registerStateActionsToElementCallback(
+          [ Actions.todoItemAdded, Actions.todoItemDeleted, 
+            Actions.todoItemChecked, Actions.todoItemUnchecked ],
           () => list.setTodos(AppState.incompleteTodos.items)
         );
         // Set initial component state
@@ -69,9 +67,14 @@ export class AppRoot {
           (e) => AppStateController.handleTodoItemCheckedChanged(e),
           list.id
         );
+        SwitchboardOperator.registerElementEventToStateActionHandler(
+          'onTodoItemDeleted',
+          (e) => AppStateController.handleTodoItemDeleted(e),
+          list.id
+        );
         // Actions => Methods
-        SwitchboardOperator.registerStateActionToElementCallback(
-          Actions.todoItemUnchecked,
+        SwitchboardOperator.registerStateActionsToElementCallback(
+          [ Actions.todoItemDeleted, Actions.todoItemUnchecked ],
           () => list.setTodos(AppState.completeTodos.items)
         );
         // Set initial component state
@@ -83,18 +86,11 @@ export class AppRoot {
 
         const badge = element as HTMLToolbarBadgeElement;
         // Events => Actions
-        // ...none
+        // ...none, this element/component fires no events
         // Actions => Methods
-        SwitchboardOperator.registerStateActionToElementCallback(
-          Actions.todoItemChecked,
-          () => badge.setContent(AppState.incompleteTodos.count)
-        );
-        SwitchboardOperator.registerStateActionToElementCallback(
-          Actions.todoItemUnchecked,
-          () => badge.setContent(AppState.incompleteTodos.count)
-        );
-        SwitchboardOperator.registerStateActionToElementCallback(
-          Actions.todoItemAdded,
+        SwitchboardOperator.registerStateActionsToElementCallback(
+          [ Actions.todoItemAdded, Actions.todoItemDeleted, 
+            Actions.todoItemChecked, Actions.todoItemUnchecked ],
           () => badge.setContent(AppState.incompleteTodos.count)
         );
         // Set initial component state
@@ -106,14 +102,11 @@ export class AppRoot {
 
         const badge = element as HTMLToolbarBadgeElement;
         // Events => Actions
-        // ...none
+        // ...none, this element/component fires no events
         // Actions => Methods
-        SwitchboardOperator.registerStateActionToElementCallback(
-          Actions.todoItemChecked,
-          () => badge.setContent(AppState.completeTodos.count)
-        );
-        SwitchboardOperator.registerStateActionToElementCallback(
-          Actions.todoItemUnchecked,
+        SwitchboardOperator.registerStateActionsToElementCallback(
+          [ Actions.todoItemDeleted, Actions.todoItemChecked, 
+            Actions.todoItemUnchecked ],
           () => badge.setContent(AppState.completeTodos.count)
         );
         // Set initial component state

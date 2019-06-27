@@ -21,7 +21,7 @@ export class AppHome {
     modal.onDidDismiss().then((event: any) => {
 
       if (event.data) {
-        
+
         this.onTodoItemCreated.emit({ item: event.data.item });
       }
     });
@@ -42,9 +42,6 @@ export class AppHome {
         
         <ion-item>
           <ion-label>Stuff to do:</ion-label>
-          <ion-button slot='end' fill='clear'>
-            <ion-icon slot='icon-only' name='more' />
-          </ion-button>
         </ion-item>
 
         <todo-list id='incompleteItemsList'/> 

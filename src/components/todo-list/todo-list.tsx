@@ -8,6 +8,7 @@ import { ITodoItem } from "../../interfaces/app-interfaces";
 export class TodoList {
 
   @Event() onTodoItemCheckedChanged: EventEmitter;
+  @Event() onTodoItemDeleted: EventEmitter;
 
   @State() _todos: ITodoItem[] = [];
 
@@ -17,11 +18,17 @@ export class TodoList {
     this._todos = todos;
   }
 
-  @Listen('onTodoItemChecked', { target: 'document' })
-  @Listen('onTodoItemUnchecked', { target: 'document' })
+  @Listen('onTodoItemCheck', { target: 'document' })
+  @Listen('onTodoItemUncheck', { target: 'document' })
   async handleTodoItemChecked(event: any) {
 
     this.onTodoItemCheckedChanged.emit({ item: event.detail.item })
+  }
+
+  @Listen('onTodoItemDelete', { target: 'document' })
+  async handleTodoItemDeleted(event: any) {
+
+    this.onTodoItemDeleted.emit({ item: event.detail.item });
   }
 
   render() {

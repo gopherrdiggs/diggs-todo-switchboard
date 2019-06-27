@@ -1,4 +1,4 @@
-import { Component, h, Event, EventEmitter, Prop, State } from "@stencil/core";
+import { Component, h, Element, Event, EventEmitter, Prop, State } from "@stencil/core";
 import { ITodoItem } from "../../interfaces/app-interfaces";
 
 @Component({
@@ -6,8 +6,11 @@ import { ITodoItem } from "../../interfaces/app-interfaces";
 })
 export class TodoItem {
 
-  @Event() onTodoItemChecked: EventEmitter;
-  @Event() onTodoItemUnchecked: EventEmitter;
+  @Element() el: HTMLTodoItemElement;
+
+  @Event() onTodoItemCheck: EventEmitter;
+  @Event() onTodoItemUncheck: EventEmitter;
+  @Event() onTodoItemDelete: EventEmitter;
 
   @Prop() todo: ITodoItem;
 
@@ -30,26 +33,47 @@ export class TodoItem {
 
     if (this._todo.isComplete) {
 
-      this.onTodoItemChecked.emit({ item: this._todo });
+      this.onTodoItemCheck.emit({ item: this._todo });
     }
     else {
 
-      this.onTodoItemUnchecked.emit({ item: this._todo });
+      this.onTodoItemUncheck.emit({ item: this._todo });
     }
+  }
+
+  async handleItemSwipe(_event: any) {
+
+    this.onTodoItemDelete.emit({ item: this._todo });
+    let slider = this.el.querySelector('ion-item-sliding');
+    slider.close();
   }
 
   render() {
     return [
 
-      <ion-item>
-        <ion-checkbox slot='start' checked={this._todo.isComplete}
-          onIonChange={() => this.handleItemCheckedChanged()} />
-        <ion-label style={{
-          fontStyle: this._todo.isComplete ? 'italic' : 'normal'
-        }}>
-          {this._todo.summary}
-        </ion-label>
-      </ion-item>
+      <ion-item-sliding>
+        <ion-item-options side='start' 
+                          onIonSwipe={(e)=>this.handleItemSwipe(e)}>
+          <ion-item-option color='danger' expandable>
+            <ion-icon name='trash' />
+          </ion-item-option>
+        </ion-item-options>
+        <ion-item>
+          <ion-checkbox slot='start' checked={this._todo.isComplete}
+            onIonChange={() => this.handleItemCheckedChanged()} />
+          <ion-label style={{
+            fontStyle: this._todo.isComplete ? 'italic' : 'normal'
+          }}>
+            {this._todo.summary}
+          </ion-label>
+        </ion-item>
+        <ion-item-options side='end'
+                          onIonSwipe={(e)=>this.handleItemSwipe(e)}>
+          <ion-item-option color='danger' expandable>
+            <ion-icon name='trash' />
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
     ];
   }
 }

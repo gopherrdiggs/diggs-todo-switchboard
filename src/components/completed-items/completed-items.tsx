@@ -20,9 +20,6 @@ export class CompletedItems {
         
         <ion-item>
           <ion-label>Stuff done:</ion-label>
-          <ion-button slot='end' fill='clear'>
-            <ion-icon slot='icon-only' name='more' />
-          </ion-button>
         </ion-item>
 
         <todo-list id='completedItemsList'/> 
