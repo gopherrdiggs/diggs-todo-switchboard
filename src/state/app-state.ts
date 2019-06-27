@@ -58,10 +58,8 @@ class AppStateActionController {
       throw new Error("Event did not contain expected item");
     }
     console.log('item added: ', item);
-    AppState.incompleteTodos.items =
-        [...AppState.incompleteTodos.items, item];
-    AppState.incompleteTodos.count =
-      AppState.incompleteTodos.items.length;
+    AppState.incompleteTodos.items = [...AppState.incompleteTodos.items, item];
+    AppState.incompleteTodos.count = AppState.incompleteTodos.items.length;
     // Execute element callbacks associated with action
     SwitchboardOperator.executeElementCallbacksForStateAction(Actions.todoItemAdded);
   }
@@ -77,13 +75,12 @@ class AppStateActionController {
         AppState.incompleteTodos.items.filter(i => {
           return i.id != item.id;
         });
-      AppState.incompleteTodos.count = 
-        AppState.incompleteTodos.items.length;
+      AppState.incompleteTodos.count = AppState.incompleteTodos.items.length;
       // Add item to complete items list
-      AppState.completeTodos.items =
-        [...AppState.completeTodos.items, item];
-      AppState.completeTodos.count =
-        AppState.completeTodos.items.length;
+      AppState.completeTodos.items = [...AppState.completeTodos.items, item];
+      // Ensure no duplicates exist
+      AppState.completeTodos.items = Array.from(new Set(AppState.completeTodos.items));
+      AppState.completeTodos.count = AppState.completeTodos.items.length;
       // Execute element callbacks associated with action
       SwitchboardOperator.executeElementCallbacksForStateAction(Actions.todoItemChecked);
       ToastService.showSuccessToast("Well done!");
@@ -94,13 +91,12 @@ class AppStateActionController {
         AppState.completeTodos.items.filter(i => {
           return i.id != item.id;
         });
-      AppState.completeTodos.count =
-        AppState.completeTodos.items.length;
+      AppState.completeTodos.count = AppState.completeTodos.items.length;
       // Add item to incomplete items list
-      AppState.incompleteTodos.items =
-        [...AppState.incompleteTodos.items, item];
-      AppState.incompleteTodos.count =
-        AppState.incompleteTodos.items.length;
+      AppState.incompleteTodos.items = [...AppState.incompleteTodos.items, item];
+      // Ensure no duplicates exist
+      AppState.incompleteTodos.items = Array.from(new Set(AppState.incompleteTodos.items));
+      AppState.incompleteTodos.count = AppState.incompleteTodos.items.length;
       // Execute element callbacks associated with action
       SwitchboardOperator.executeElementCallbacksForStateAction(Actions.todoItemUnchecked);
       ToastService.showSuccessToast("Okay, bringing it back.")
