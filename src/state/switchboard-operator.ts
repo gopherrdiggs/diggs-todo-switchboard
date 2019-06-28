@@ -35,18 +35,7 @@ class SwitchboardController {
     this.rootElement = rootElement;
   }
 
-  async registerStateActionsToElementCallback(
-    actionNames: string[], method: Function) {
-    
-    for (let actionName of actionNames) {
-      await this.registerStateActionToElementCallback(actionName, method);
-    }
-  }
-
-  // Add to the list of callback functions/methods that are called when an action occurs.
-  async registerStateActionToElementCallback(
-    actionName: string, method: Function) {
-
+  setCallbackForActions(actionName: string, method: Function) {
     let registration = this.stateActionToElementMethodRegistry.registry.find(r => {
       return r.actionName === actionName;
     });
@@ -67,18 +56,7 @@ class SwitchboardController {
     registration.elementMethods.push(method);
   }
 
-  async registerElementEventsToStateActionHandler(
-    eventNames: string[], handler: Function, sourceElementId?: string) {
-    
-    for (let eventName of eventNames) {
-      await this.registerElementEventToStateActionHandler(eventName, handler, sourceElementId);
-    }
-  }
-
-  // Configure which action handler is called when an event occurs.
-  async registerElementEventToStateActionHandler(
-    eventName: string, handler: Function, sourceElementId?: string) {
-
+  setHandlerForEvents(eventName: string, actionHandler: Function, sourceElementId?: string) {
     let registration = this.elementEventToStateActionHandlerRegistry.registry.find(r => {
       if (sourceElementId) {
         return r.eventName === eventName && r.sourceElementId === sourceElementId;
@@ -94,7 +72,7 @@ class SwitchboardController {
     // Registry entry does not exist, create it.
     this.elementEventToStateActionHandlerRegistry.registry.push({
       eventName: eventName,
-      actionHandler: handler,
+      actionHandler: actionHandler,
       sourceElementId: sourceElementId
     });
 
@@ -117,7 +95,7 @@ class SwitchboardController {
       registration.actionHandler(event);
     });
   }
-  
+
   async executeElementCallbacksForStateAction(actionName: string) {
 
     console.log('Executing methods associated with actionName: ', actionName);;
@@ -134,6 +112,7 @@ class SwitchboardController {
       await method();
     }
   }
+
 }
 
-export const SwitchboardOperator = new SwitchboardController();
+export const SO = new SwitchboardController();

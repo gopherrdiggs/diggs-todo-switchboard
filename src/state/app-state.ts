@@ -1,5 +1,5 @@
 import { ITodoItemList, ITodoItem } from "../interfaces/app-interfaces";
-import { SwitchboardOperator } from "./switchboard-operator";
+import { SO } from "./switchboard-operator";
 import { ToastService } from "../services/toast-service";
 
 interface IAppState {
@@ -61,7 +61,7 @@ class AppStateActionController {
     AppState.incompleteTodos.items = [...AppState.incompleteTodos.items, item];
     AppState.incompleteTodos.count = AppState.incompleteTodos.items.length;
     // Execute element callbacks associated with action
-    SwitchboardOperator.executeElementCallbacksForStateAction(Actions.todoItemAdded);
+    SO.executeElementCallbacksForStateAction(Actions.todoItemAdded);
   }
 
   handleTodoItemCheckedChanged(event: any) {
@@ -86,7 +86,7 @@ class AppStateActionController {
       AppState.completeTodos.items = Array.from(new Set(AppState.completeTodos.items));
       AppState.completeTodos.count = AppState.completeTodos.items.length;
       // Execute element callbacks associated with action
-      SwitchboardOperator.executeElementCallbacksForStateAction(Actions.todoItemChecked);
+      SO.executeElementCallbacksForStateAction(Actions.todoItemChecked);
       ToastService.showSuccessToast("Well done!", "top");
     }
     else {
@@ -102,7 +102,7 @@ class AppStateActionController {
       AppState.incompleteTodos.items = Array.from(new Set(AppState.incompleteTodos.items));
       AppState.incompleteTodos.count = AppState.incompleteTodos.items.length;
       // Execute element callbacks associated with action
-      SwitchboardOperator.executeElementCallbacksForStateAction(Actions.todoItemUnchecked);
+      SO.executeElementCallbacksForStateAction(Actions.todoItemUnchecked);
       ToastService.showSuccessToast("Okay, bringing it back.", "top")
     }
   }
@@ -129,9 +129,9 @@ class AppStateActionController {
       });
     AppState.completeTodos.count = AppState.completeTodos.items.length;
     // Execute element callbacks associated with action
-    SwitchboardOperator.executeElementCallbacksForStateAction(Actions.todoItemDeleted);
+    SO.executeElementCallbacksForStateAction(Actions.todoItemDeleted);
   }
 
 }
 
-export const AppStateController = new AppStateActionController();
+export const App = new AppStateActionController();

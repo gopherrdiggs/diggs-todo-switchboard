@@ -1,6 +1,7 @@
 import { Component, h, Element, Listen } from '@stencil/core';
-import { SwitchboardOperator } from '../../state/switchboard-operator';
-import { AppStateController, AppState, Actions } from '../../state/app-state';
+import { SO } from '../../state/switchboard-operator';
+import { App, AppState, Actions } from '../../state/app-state';
+
 
 @Component({
   tag: 'app-root',
@@ -12,8 +13,8 @@ export class AppRoot {
 
   async componentWillLoad() {
 
-    await AppStateController.initializeController();
-    SwitchboardOperator.setRootElement(this.el);
+    await App.initializeController();
+    SO.setRootElement(this.el);
   }
 
   // As elements are added to the DOM, this handler picks out certain ones, identified by the element's ID property,
@@ -36,23 +37,32 @@ export class AppRoot {
       case 'incompleteItemsList': {
 
         const list = element as HTMLTodoListElement;
+
         // Events => Actions
-        SwitchboardOperator.registerElementEventToStateActionHandler(
-          'onTodoItemCheckedChanged', 
-          (e) => AppStateController.handleTodoItemCheckedChanged(e),
-          list.id
-        );
-        SwitchboardOperator.registerElementEventToStateActionHandler(
-          'onTodoItemDeleted',
-          (e) => AppStateController.handleTodoItemDeleted(e),
-          list.id
-        );
+        [ 'onTodoItemCheckedChanged' ].map((n)=>SO.setHandlerForEvents(n,
+          (ev) => App.handleTodoItemCheckedChanged(ev), element.id));
+
+        [ 'onTodoItemDeleted' ].map((n)=>SO.setHandlerForEvents(n,
+          (ev) => App.handleTodoItemDeleted(ev), element.id));
+
+        // SO.registerElementEventToStateActionHandler(
+        //   'onTodoItemCheckedChanged', (e) => App.handleTodoItemCheckedChanged(e), list.id);
+        // SO.registerElementEventToStateActionHandler(
+        //   'onTodoItemDeleted', (e) => App.handleTodoItemDeleted(e), list.id);
+
         // Actions => Methods
-        SwitchboardOperator.registerStateActionsToElementCallback(
-          [ Actions.todoItemAdded, Actions.todoItemDeleted, 
-            Actions.todoItemChecked, Actions.todoItemUnchecked ],
-          () => list.setTodos(AppState.incompleteTodos.items)
-        );
+        [ Actions.todoItemAdded, 
+          Actions.todoItemDeleted, 
+          Actions.todoItemChecked, 
+          Actions.todoItemUnchecked ].map((n)=>SO.setCallbackForActions(n,
+          ()=>list.setTodos(AppState.incompleteTodos.items)));
+
+        // SswitchboardOperator.registerStateActionsToElementCallback(
+        //   [ Actions.todoItemAdded, Actions.todoItemDeleted, 
+        //     Actions.todoItemChecked, Actions.todoItemUnchecked ],
+        //   () => list.setTodos(AppState.incompleteTodos.items)
+        // );
+
         // Set initial component state
         list.setTodos(AppState.incompleteTodos.items);
         break;
@@ -61,22 +71,19 @@ export class AppRoot {
       case 'completedItemsList': {
 
         const list = element as HTMLTodoListElement;
+
         // Events => Actions
-        SwitchboardOperator.registerElementEventToStateActionHandler(
-          'onTodoItemCheckedChanged', 
-          (e) => AppStateController.handleTodoItemCheckedChanged(e),
-          list.id
-        );
-        SwitchboardOperator.registerElementEventToStateActionHandler(
-          'onTodoItemDeleted',
-          (e) => AppStateController.handleTodoItemDeleted(e),
-          list.id
-        );
+        [ 'onTodoItemCheckedChanged' ].map((n)=>SO.setHandlerForEvents(n,
+          (ev) => App.handleTodoItemCheckedChanged(ev), element.id));
+
+        [ 'onTodoItemCheckedChanged' ].map((n)=>SO.setHandlerForEvents(n,
+          (ev) => App.handleTodoItemCheckedChanged(ev), element.id));
+
         // Actions => Methods
-        SwitchboardOperator.registerStateActionsToElementCallback(
-          [ Actions.todoItemDeleted, Actions.todoItemUnchecked ],
-          () => list.setTodos(AppState.completeTodos.items)
-        );
+        [ Actions.todoItemDeleted, 
+          Actions.todoItemUnchecked ].map((n)=>SO.setCallbackForActions(n,
+          ()=>list.setTodos(AppState.completeTodos.items)));
+
         // Set initial component state
         list.setTodos(AppState.completeTodos.items);
         break;
@@ -85,14 +92,17 @@ export class AppRoot {
       case 'incompleteItemsCount': {
 
         const badge = element as HTMLToolbarBadgeElement;
+
         // Events => Actions
         // ...none, this element/component fires no events
+
         // Actions => Methods
-        SwitchboardOperator.registerStateActionsToElementCallback(
-          [ Actions.todoItemAdded, Actions.todoItemDeleted, 
-            Actions.todoItemChecked, Actions.todoItemUnchecked ],
-          () => badge.setContent(AppState.incompleteTodos.count)
-        );
+        [ Actions.todoItemAdded, 
+          Actions.todoItemDeleted, 
+          Actions.todoItemChecked, 
+          Actions.todoItemUnchecked ].map((n)=>SO.setCallbackForActions(n,
+          () => badge.setContent(AppState.incompleteTodos.count)));
+          
         // Set initial component state
         badge.setContent(AppState.incompleteTodos.count);
         break;
@@ -101,14 +111,17 @@ export class AppRoot {
       case 'completedItemsCount': {
 
         const badge = element as HTMLToolbarBadgeElement;
+
         // Events => Actions
         // ...none, this element/component fires no events
+
         // Actions => Methods
-        SwitchboardOperator.registerStateActionsToElementCallback(
-          [ Actions.todoItemDeleted, Actions.todoItemChecked, 
-            Actions.todoItemUnchecked ],
-          () => badge.setContent(AppState.completeTodos.count)
-        );
+        [ Actions.todoItemDeleted, 
+          Actions.todoItemChecked, 
+          Actions.todoItemUnchecked ].map((n)=>SO.setCallbackForActions(n,
+          () => badge.setContent(AppState.completeTodos.count)));
+          
+          
         // Set initial component state
         badge.setContent(AppState.completeTodos.count);
         break;
@@ -116,12 +129,9 @@ export class AppRoot {
 
       case 'addTodoModal': {
 
-        console.log("registering event-action mapping for modal");
         // Events => Actions
-        SwitchboardOperator.registerElementEventToStateActionHandler(
-          'onTodoItemCreated',
-          (e) => AppStateController.handleTodoItemCreated(e)
-        );
+        [ 'onTodoItemCreated' ].map((n)=>SO.setHandlerForEvents(n,
+          (ev) => App.handleTodoItemCreated(ev), element.id));
       }
     }
   }
