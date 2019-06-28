@@ -45,23 +45,12 @@ export class AppRoot {
         [ 'onTodoItemDeleted' ].map((n)=>SO.setHandlerForEvents(n,
           (ev) => App.handleTodoItemDeleted(ev), element.id));
 
-        // SO.registerElementEventToStateActionHandler(
-        //   'onTodoItemCheckedChanged', (e) => App.handleTodoItemCheckedChanged(e), list.id);
-        // SO.registerElementEventToStateActionHandler(
-        //   'onTodoItemDeleted', (e) => App.handleTodoItemDeleted(e), list.id);
-
         // Actions => Methods
         [ Actions.todoItemAdded, 
           Actions.todoItemDeleted, 
           Actions.todoItemChecked, 
           Actions.todoItemUnchecked ].map((n)=>SO.setCallbackForActions(n,
           ()=>list.setTodos(AppState.incompleteTodos.items)));
-
-        // SswitchboardOperator.registerStateActionsToElementCallback(
-        //   [ Actions.todoItemAdded, Actions.todoItemDeleted, 
-        //     Actions.todoItemChecked, Actions.todoItemUnchecked ],
-        //   () => list.setTodos(AppState.incompleteTodos.items)
-        // );
 
         // Set initial component state
         list.setTodos(AppState.incompleteTodos.items);
