@@ -1,4 +1,4 @@
-import { Component, h, State } from "@stencil/core";
+import { Component, h, Listen, State } from "@stencil/core";
 import { ModalService } from "../../services/modal-service";
 import { ITodoItem } from "../../interfaces/app-interfaces";
 import { generateUniqueId } from "../../helpers/utils";
@@ -28,6 +28,13 @@ export class TodoAdd {
   async handleSummaryChange(event: any) {
 
     this._todo.summary = event.target.value;
+  }
+
+  @Listen('keydown')
+  handleKeyDown(ev: KeyboardEvent){
+    if (ev.key === 'Enter'){
+      this.handleSaveClick();
+    }
   }
 
   render() {

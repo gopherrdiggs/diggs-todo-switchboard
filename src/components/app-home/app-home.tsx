@@ -54,7 +54,7 @@ export class AppHome {
 
         <ion-fab vertical='bottom' horizontal='start'>
           <ion-fab-button color='secondary'
-                          href='/done'>
+                          href='/done' routerDirection='forward'>
             <ion-icon name='done-all' />
           </ion-fab-button>
         </ion-fab>

@@ -1,14 +1,12 @@
 import { ITodoItemList, ITodoItem } from "../interfaces/app-interfaces";
 import { SO } from "./switchboard-operator";
 import { ToastService } from "../services/toast-service";
+import { Storage } from "../services/storage-service";
 
 interface IAppState {
   incompleteTodos: ITodoItemList,
   completeTodos: ITodoItemList
 }
-
-// As app state grows, the plan is to split this interface into 
-// domain-specific controllers, along with corresponding state sub-objects.
 
 export var AppState = {} as IAppState;
 
@@ -21,7 +19,7 @@ export const enum Actions {
 
 class AppStateActionController {
 
-  async initializeController() {
+  async initialize() {
 
     console.log("Initializing app state controller...");
     await this.getInitialAppState();
@@ -31,25 +29,38 @@ class AppStateActionController {
   async getInitialAppState() {
 
     console.log("Getting initial app state...");
-    AppState = {
-      incompleteTodos: {
-        items: [
-          { id: '09dsht', summary: 'Test 2', isComplete: false },
-          { id: 'lfa09h', summary: 'Test 3', isComplete: false },
-          { id: 'flk2jg', summary: 'Test 4', isComplete: false }
-        ],
-        count: 3
-      },
-      completeTodos: {
-        items: [
-          { id: 'l1kj3t', summary: 'Test 1', isComplete: true }
-        ],
-        count: 1
+
+    try {
+
+      const savedState = Storage.loadState();
+
+      console.log("saved state: ", savedState);
+
+      if (!savedState) {
+        throw new Error("No saved state");
+      }
+    }
+    catch (error) {
+
+      console.log("loading default initial state");
+      AppState = {
+        incompleteTodos: {
+          items: [
+            { id: '09dsht', summary: 'Add a to-do', isComplete: false }
+          ],
+          count: 1
+        },
+        completeTodos: {
+          items: [
+            { id: 'l1kj3t', summary: 'Get the app', isComplete: true }
+          ],
+          count: 1
+        }
       }
     }
   }
 
-  handleTodoItemCreated(event: any) {
+  async handleTodoItemAdded(event: any) {
 
     console.log("Handling todoItemAdded event: ", event);
     let item = event.detail.item as ITodoItem;
@@ -61,10 +72,12 @@ class AppStateActionController {
     AppState.incompleteTodos.items = [...AppState.incompleteTodos.items, item];
     AppState.incompleteTodos.count = AppState.incompleteTodos.items.length;
     // Execute element callbacks associated with action
-    SO.executeElementCallbacksForStateAction(Actions.todoItemAdded);
+    await SO.executeElementCallbacksForStateAction(Actions.todoItemAdded);
+
+    Storage.saveState(AppState);
   }
 
-  handleTodoItemCheckedChanged(event: any) {
+  async handleTodoItemCheckedChanged(event: any) {
 
     console.log('Handling todoItemCheckedChanged event: ', event);
     let item = event.detail.item as ITodoItem;
@@ -102,12 +115,14 @@ class AppStateActionController {
       AppState.incompleteTodos.items = Array.from(new Set(AppState.incompleteTodos.items));
       AppState.incompleteTodos.count = AppState.incompleteTodos.items.length;
       // Execute element callbacks associated with action
-      SO.executeElementCallbacksForStateAction(Actions.todoItemUnchecked);
+      await SO.executeElementCallbacksForStateAction(Actions.todoItemUnchecked);
       ToastService.showSuccessToast("Okay, bringing it back.", "top")
     }
+
+    Storage.saveState(AppState);
   }
   
-  handleTodoItemDeleted(event: any) {
+  async handleTodoItemDeleted(event: any) {
 
     console.log("Handling todoItemDeleted event: ", event);
     let item = event.detail.item as ITodoItem;
@@ -129,7 +144,9 @@ class AppStateActionController {
       });
     AppState.completeTodos.count = AppState.completeTodos.items.length;
     // Execute element callbacks associated with action
-    SO.executeElementCallbacksForStateAction(Actions.todoItemDeleted);
+    await SO.executeElementCallbacksForStateAction(Actions.todoItemDeleted);
+
+    Storage.saveState(AppState);
   }
 
 }

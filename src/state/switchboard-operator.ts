@@ -52,8 +52,17 @@ class SwitchboardController {
       });
     }
 
-    //TODO: Ensure the exact same method is not registered more than once.
-    registration.elementMethods.push(method);
+    // Ensure the exact same method is not registered more than once.
+    // let methodRegistration = registration.elementMethods.find(m => {
+    //   return m.toString() == method.toString();
+    // })
+
+    // if (!methodRegistration) {
+
+      console.log(`Registering for action: ${actionName} method: ${method.toString()}`);
+
+      registration.elementMethods.push(method);
+    // }
   }
 
   setHandlerForEvents(eventName: string, actionHandler: Function, sourceElementId?: string) {
@@ -65,8 +74,8 @@ class SwitchboardController {
     });
 
     if (registration) {
-      return; //TODO: Revert back to throwing error once elements are un-registered when removed from DOM
-      // throw new Error("ERROR: Event registered to action handler more than once. Did you mean to register events based on element IDs?");
+      // Handler already registered for this event
+      return; 
     }
 
     // Registry entry does not exist, create it.

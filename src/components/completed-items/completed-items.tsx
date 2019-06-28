@@ -26,7 +26,7 @@ export class CompletedItems {
         
         <ion-fab vertical='bottom' horizontal='start'>
           <ion-fab-button color='primary'
-                          href='/'>
+                          href='/' routerDirection='back'>
             <ion-icon name='home' />
           </ion-fab-button>
         </ion-fab>

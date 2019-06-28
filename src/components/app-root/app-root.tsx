@@ -17,12 +17,6 @@ export class AppRoot {
 
       const list = el as HTMLTodoListElement;
 
-      // Events => Actions
-      [ 'onTodoItemCheckedChanged' ].map((n) => SO.setHandlerForEvents(n,
-        (ev) => App.handleTodoItemCheckedChanged(ev), el.id));
-      [ 'onTodoItemDeleted' ].map((n)=>SO.setHandlerForEvents(n,
-        (ev) => App.handleTodoItemDeleted(ev), el.id));
-
       // Actions => Methods
       [ Actions.todoItemAdded, 
         Actions.todoItemDeleted, 
@@ -36,13 +30,7 @@ export class AppRoot {
 
     incompleteItemsCount: (el) => {
 
-      console.log('element: ', el);
-      
       const badge = el as HTMLToolbarBadgeElement;
-      console.log('badge element: ', badge);
-
-      // Events => Actions
-        // ...none, this element/component fires no events
 
       // Actions => Methods
       [ Actions.todoItemAdded, 
@@ -59,13 +47,6 @@ export class AppRoot {
 
       const list = el as HTMLTodoListElement;
 
-      // Events => Actions
-      [ 'onTodoItemCheckedChanged' ].map((n)=>SO.setHandlerForEvents(n,
-        (ev) => App.handleTodoItemCheckedChanged(ev), el.id));
-
-      [ 'onTodoItemCheckedChanged' ].map((n)=>SO.setHandlerForEvents(n,
-        (ev) => App.handleTodoItemCheckedChanged(ev), el.id));
-
       // Actions => Methods
       [ Actions.todoItemDeleted, 
         Actions.todoItemUnchecked ].map((n)=>SO.setCallbackForActions(n,
@@ -79,9 +60,6 @@ export class AppRoot {
 
       const badge = el as HTMLToolbarBadgeElement;
 
-      // Events => Actions
-      // ...none, this element/component fires no events
-
       // Actions => Methods
       [ Actions.todoItemDeleted, 
         Actions.todoItemChecked, 
@@ -91,20 +69,23 @@ export class AppRoot {
         
       // Set initial component state
       badge.setContent(AppState.completeTodos.count);
-    },
-
-    addTodoModal: (el) => {
-
-      // Events => Actions
-      [ 'onTodoItemCreated' ].map((n)=>SO.setHandlerForEvents(n,
-        (ev) => App.handleTodoItemCreated(ev), el.id));
     }
   }
 
   async componentWillLoad() {
 
-    await App.initializeController();
+    await App.initialize();
+
     SO.setRootElement(this.el);
+
+    // Events => Actions
+    [ 'onTodoItemCreated' ].map((n)=>SO.setHandlerForEvents(n,
+      (ev) => App.handleTodoItemAdded(ev)));
+    [ 'onTodoItemCheckedChanged' ].map((n)=>SO.setHandlerForEvents(n,
+      (ev) => App.handleTodoItemCheckedChanged(ev)));
+    [ 'onTodoItemDeleted' ].map((n)=>SO.setHandlerForEvents(n,
+      (ev) => App.handleTodoItemDeleted(ev)));
+
   }
 
   // As elements are added to the DOM, this handler picks out certain ones, 
@@ -121,6 +102,7 @@ export class AppRoot {
     
     if (this.switchboard.hasOwnProperty(element.id)) {
 
+      console.log(`%c Get config for element: ${element.id}`, 'background: #222; color: blue');
       this.switchboard[element.id](element);
     }
   }
