@@ -11,117 +11,115 @@ export class AppRoot {
 
   @Element() el: HTMLAppRootElement;
 
+  switchboard = {
+
+    incompleteItemsList: (el) => {
+
+      const list = el as HTMLTodoListElement;
+
+      // Events => Actions
+      [ 'onTodoItemCheckedChanged' ].map((n) => SO.setHandlerForEvents(n,
+        (ev) => App.handleTodoItemCheckedChanged(ev), el.id));
+      [ 'onTodoItemDeleted' ].map((n)=>SO.setHandlerForEvents(n,
+        (ev) => App.handleTodoItemDeleted(ev), el.id));
+
+      // Actions => Methods
+      [ Actions.todoItemAdded, 
+        Actions.todoItemDeleted, 
+        Actions.todoItemChecked, 
+        Actions.todoItemUnchecked ].map((n)=>SO.setCallbackForActions(n,
+        ()=>list.setTodos(AppState.incompleteTodos.items)));
+
+      // Set initial component state
+      list.setTodos(AppState.incompleteTodos.items);
+    },
+
+    incompleteItemsCount: (el) => {
+
+      const badge = el as HTMLToolbarBadgeElement;
+
+      // Events => Actions
+        // ...none, this element/component fires no events
+
+      // Actions => Methods
+      [ Actions.todoItemAdded, 
+        Actions.todoItemDeleted, 
+        Actions.todoItemChecked, 
+        Actions.todoItemUnchecked ].map((n)=>SO.setCallbackForActions(n,
+        () => badge.setContent(AppState.incompleteTodos.count)));
+        
+      // Set initial component state
+      badge.setContent(AppState.incompleteTodos.count);
+    },
+
+    completedItemsList: (el) => {
+
+      const list = el as HTMLTodoListElement;
+
+      // Events => Actions
+      [ 'onTodoItemCheckedChanged' ].map((n)=>SO.setHandlerForEvents(n,
+        (ev) => App.handleTodoItemCheckedChanged(ev), el.id));
+
+      [ 'onTodoItemCheckedChanged' ].map((n)=>SO.setHandlerForEvents(n,
+        (ev) => App.handleTodoItemCheckedChanged(ev), el.id));
+
+      // Actions => Methods
+      [ Actions.todoItemDeleted, 
+        Actions.todoItemUnchecked ].map((n)=>SO.setCallbackForActions(n,
+        ()=>list.setTodos(AppState.completeTodos.items)));
+
+      // Set initial component state
+      list.setTodos(AppState.completeTodos.items);
+    },
+
+    completedItemsCount: (el) => {
+
+      const badge = el as HTMLToolbarBadgeElement;
+
+      // Events => Actions
+      // ...none, this element/component fires no events
+
+      // Actions => Methods
+      [ Actions.todoItemDeleted, 
+        Actions.todoItemChecked, 
+        Actions.todoItemUnchecked ].map((n)=>SO.setCallbackForActions(n,
+        () => badge.setContent(AppState.completeTodos.count)));
+        
+        
+      // Set initial component state
+      badge.setContent(AppState.completeTodos.count);
+    },
+
+    addTodoModal: (el) => {
+
+      // Events => Actions
+      [ 'onTodoItemCreated' ].map((n)=>SO.setHandlerForEvents(n,
+        (ev) => App.handleTodoItemCreated(ev), el.id));
+    }
+  }
+
   async componentWillLoad() {
 
     await App.initializeController();
     SO.setRootElement(this.el);
   }
 
-  // As elements are added to the DOM, this handler picks out certain ones, identified by the element's ID property,
-  // then registers Events=>Actions and Actions=>Methods mappings for the element (web component)
-  // Obviously, the registration of all these elements and callbacks doesn't scale well for a single file like this,
-  // so any ideas on how to organize this logic - maybe based on domain - would be appreciated.
+  // As elements are added to the DOM, this handler picks out certain ones, 
+  // identified by the element's ID property, and then registers 
+  // Events=>Actions and Actions=>Methods mappings for the element/web component.
   @Listen('DOMNodeInserted', { target: 'document' })
   handleDomNodeInserted(event: any) {
-
-    if (!event) return;
 
     if (!event.relatedNode) {
       console.log('Event does not contain relatedNode property.');
     };
 
+    
     const element = event.relatedNode;
+    
+    if (this.switchboard.hasOwnProperty(element.id)) {
 
-    switch (element.id) {
-
-      case 'incompleteItemsList': {
-
-        const list = element as HTMLTodoListElement;
-
-        // Events => Actions
-        [ 'onTodoItemCheckedChanged' ].map((n)=>SO.setHandlerForEvents(n,
-          (ev) => App.handleTodoItemCheckedChanged(ev), element.id));
-
-        [ 'onTodoItemDeleted' ].map((n)=>SO.setHandlerForEvents(n,
-          (ev) => App.handleTodoItemDeleted(ev), element.id));
-
-        // Actions => Methods
-        [ Actions.todoItemAdded, 
-          Actions.todoItemDeleted, 
-          Actions.todoItemChecked, 
-          Actions.todoItemUnchecked ].map((n)=>SO.setCallbackForActions(n,
-          ()=>list.setTodos(AppState.incompleteTodos.items)));
-
-        // Set initial component state
-        list.setTodos(AppState.incompleteTodos.items);
-        break;
-      }
-
-      case 'completedItemsList': {
-
-        const list = element as HTMLTodoListElement;
-
-        // Events => Actions
-        [ 'onTodoItemCheckedChanged' ].map((n)=>SO.setHandlerForEvents(n,
-          (ev) => App.handleTodoItemCheckedChanged(ev), element.id));
-
-        [ 'onTodoItemCheckedChanged' ].map((n)=>SO.setHandlerForEvents(n,
-          (ev) => App.handleTodoItemCheckedChanged(ev), element.id));
-
-        // Actions => Methods
-        [ Actions.todoItemDeleted, 
-          Actions.todoItemUnchecked ].map((n)=>SO.setCallbackForActions(n,
-          ()=>list.setTodos(AppState.completeTodos.items)));
-
-        // Set initial component state
-        list.setTodos(AppState.completeTodos.items);
-        break;
-      }
-
-      case 'incompleteItemsCount': {
-
-        const badge = element as HTMLToolbarBadgeElement;
-
-        // Events => Actions
-        // ...none, this element/component fires no events
-
-        // Actions => Methods
-        [ Actions.todoItemAdded, 
-          Actions.todoItemDeleted, 
-          Actions.todoItemChecked, 
-          Actions.todoItemUnchecked ].map((n)=>SO.setCallbackForActions(n,
-          () => badge.setContent(AppState.incompleteTodos.count)));
-          
-        // Set initial component state
-        badge.setContent(AppState.incompleteTodos.count);
-        break;
-      }
-
-      case 'completedItemsCount': {
-
-        const badge = element as HTMLToolbarBadgeElement;
-
-        // Events => Actions
-        // ...none, this element/component fires no events
-
-        // Actions => Methods
-        [ Actions.todoItemDeleted, 
-          Actions.todoItemChecked, 
-          Actions.todoItemUnchecked ].map((n)=>SO.setCallbackForActions(n,
-          () => badge.setContent(AppState.completeTodos.count)));
-          
-          
-        // Set initial component state
-        badge.setContent(AppState.completeTodos.count);
-        break;
-      }
-
-      case 'addTodoModal': {
-
-        // Events => Actions
-        [ 'onTodoItemCreated' ].map((n)=>SO.setHandlerForEvents(n,
-          (ev) => App.handleTodoItemCreated(ev), element.id));
-      }
+      this.switchboard[element.id]();
     }
   }
 
