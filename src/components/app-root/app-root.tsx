@@ -36,7 +36,10 @@ export class AppRoot {
 
     incompleteItemsCount: (el) => {
 
+      console.log('element: ', el);
+      
       const badge = el as HTMLToolbarBadgeElement;
+      console.log('badge element: ', badge);
 
       // Events => Actions
         // ...none, this element/component fires no events
@@ -114,12 +117,11 @@ export class AppRoot {
       console.log('Event does not contain relatedNode property.');
     };
 
-    
     const element = event.relatedNode;
     
     if (this.switchboard.hasOwnProperty(element.id)) {
 
-      this.switchboard[element.id]();
+      this.switchboard[element.id](element);
     }
   }
 
