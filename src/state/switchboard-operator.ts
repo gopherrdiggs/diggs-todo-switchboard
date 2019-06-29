@@ -30,18 +30,6 @@ class SwitchboardController {
     this.actionCallbacks[actionName].callbacks[methodKey] = method;
   }
 
-  removeCallbacks(_elementId: string) {
-    // console.log(`Removing callbacks for ${elementId}`);
-
-    // this.stateActionToElementMethodRegistry.registry =
-    //   this.stateActionToElementMethodRegistry.registry.filter(r => {
-    //     if (r.elementId && r.elementId == elementId) {
-    //       console.log(`Removing callback for ${elementId}`);
-    //     }
-    //     return r.elementId && r.elementId != elementId;
-    //   });
-  }
-
   setHandlerForEvents(eventName: string, actionHandler: Function) {
 
     this.rootElement.addEventListener(eventName, (event: any) => actionHandler(event));
