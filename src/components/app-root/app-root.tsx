@@ -103,26 +103,9 @@ export class AppRoot {
     
     if (this.switchboard.hasOwnProperty(element.id)) {
 
-      console.log(`%c Get config for element: ${element.id}`, 'background-color: #222; color: blue');
+      console.log(`%c Get config for element: ${element.id}`, 'background-color: #222; color: lightblue');
       this.switchboard[element.id](element);
     }
-  }
-
-  // Note: this is not guaranteed to removed registered callbacks for every element.
-  @Listen('DOMNodeRemoved', { target: 'document' })
-  handleDomNodeRemoved(event: any) {
-
-    if (!event.relatedNode) {
-      console.log('Event does not contain relatedNode property.');
-    };
-
-    // const element = event.relatedNode;
-    
-    // if (this.switchboard.hasOwnProperty(element.id)) {
-
-    //   // Unregister element callbacks
-    //   SO.removeCallbacks(element.id);
-    // }
   }
 
   render() {
