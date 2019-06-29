@@ -1,7 +1,8 @@
 
 interface StateActionToElementCallbackMapping {
   actionName: string,
-  elementMethods: Function[]
+  elementMethods: Function[],
+  elementId?: string
 }
 
 interface StateActionToElementCallbackRegistry {
@@ -35,16 +36,30 @@ class SwitchboardController {
     this.rootElement = rootElement;
   }
 
-  setCallbackForActions(actionName: string, method: Function) {
+  setCallbackForActions(actionName: string, method: Function, elementId?: string) {
+
+    // Get an existing registration, if one exists
+    let existingRegistration = this.stateActionToElementMethodRegistry.registry.find(r => {
+
+      if (elementId) {
+        return r.elementId == elementId && r.actionName == actionName;
+      }
+      return r.actionName == actionName;
+    });
+
+    // Do not register the same callback multiple times
+    if (existingRegistration) { return };
+ 
     let registration = this.stateActionToElementMethodRegistry.registry.find(r => {
-      return r.actionName === actionName;
+      return r.actionName == actionName;
     });
 
     if (!registration) {
       // Registry entry does not exist, create it.
       this.stateActionToElementMethodRegistry.registry.push({
         actionName: actionName,
-        elementMethods: []
+        elementMethods: [],
+        elementId
       });
 
       registration = this.stateActionToElementMethodRegistry.registry.find(r => {
@@ -52,17 +67,20 @@ class SwitchboardController {
       });
     }
 
-    // Ensure the exact same method is not registered more than once.
-    // let methodRegistration = registration.elementMethods.find(m => {
-    //   return m.toString() == method.toString();
-    // })
+    console.log(`Registering method: ${method.toString()} for action: ${actionName}`);
+    registration.elementMethods.push(method);
+  }
 
-    // if (!methodRegistration) {
+  removeCallbacks(elementId: string) {
+    console.log(`Removing callbacks for ${elementId}`);
 
-      console.log(`Registering for action: ${actionName} method: ${method.toString()}`);
-
-      registration.elementMethods.push(method);
-    // }
+    this.stateActionToElementMethodRegistry.registry =
+      this.stateActionToElementMethodRegistry.registry.filter(r => {
+        if (r.elementId && r.elementId == elementId) {
+          console.log(`Removing callback for ${elementId}`);
+        }
+        return r.elementId && r.elementId != elementId;
+      });
   }
 
   setHandlerForEvents(eventName: string, actionHandler: Function, sourceElementId?: string) {

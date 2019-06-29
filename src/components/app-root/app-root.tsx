@@ -22,7 +22,7 @@ export class AppRoot {
         Actions.todoItemDeleted, 
         Actions.todoItemChecked, 
         Actions.todoItemUnchecked ].map((n)=>SO.setCallbackForActions(n,
-        ()=>list.setTodos(AppState.incompleteTodos.items)));
+        ()=>list.setTodos(AppState.incompleteTodos.items), el.id));
 
       // Set initial component state
       list.setTodos(AppState.incompleteTodos.items);
@@ -37,7 +37,7 @@ export class AppRoot {
         Actions.todoItemDeleted, 
         Actions.todoItemChecked, 
         Actions.todoItemUnchecked ].map((n)=>SO.setCallbackForActions(n,
-        () => badge.setContent(AppState.incompleteTodos.count)));
+        () => badge.setContent(AppState.incompleteTodos.count), el.id));
         
       // Set initial component state
       badge.setContent(AppState.incompleteTodos.count);
@@ -50,7 +50,7 @@ export class AppRoot {
       // Actions => Methods
       [ Actions.todoItemDeleted, 
         Actions.todoItemUnchecked ].map((n)=>SO.setCallbackForActions(n,
-        ()=>list.setTodos(AppState.completeTodos.items)));
+        ()=>list.setTodos(AppState.completeTodos.items), el.id));
 
       // Set initial component state
       list.setTodos(AppState.completeTodos.items);
@@ -64,7 +64,7 @@ export class AppRoot {
       [ Actions.todoItemDeleted, 
         Actions.todoItemChecked, 
         Actions.todoItemUnchecked ].map((n)=>SO.setCallbackForActions(n,
-        () => badge.setContent(AppState.completeTodos.count)));
+        () => badge.setContent(AppState.completeTodos.count), el.id));
         
         
       // Set initial component state
@@ -78,11 +78,13 @@ export class AppRoot {
 
     SO.setRootElement(this.el);
 
-    // Events => Actions
+    // Event/s => Action mapping
     [ 'onTodoItemCreated' ].map((n)=>SO.setHandlerForEvents(n,
       (ev) => App.handleTodoItemAdded(ev)));
+      
     [ 'onTodoItemCheckedChanged' ].map((n)=>SO.setHandlerForEvents(n,
       (ev) => App.handleTodoItemCheckedChanged(ev)));
+
     [ 'onTodoItemDeleted' ].map((n)=>SO.setHandlerForEvents(n,
       (ev) => App.handleTodoItemDeleted(ev)));
 
@@ -107,10 +109,21 @@ export class AppRoot {
     }
   }
 
+  // Note: this is not guaranteed to removed registered callbacks for every element.
   @Listen('DOMNodeRemoved', { target: 'document' })
-  handleDomNodeRemoved(_event: any) {
+  handleDomNodeRemoved(event: any) {
 
-    //TODO: Unregister element events and methods from state management
+    if (!event.relatedNode) {
+      console.log('Event does not contain relatedNode property.');
+    };
+
+    const element = event.relatedNode;
+    
+    if (this.switchboard.hasOwnProperty(element.id)) {
+
+      // Unregister element callbacks
+      SO.removeCallbacks(element.id);
+    }
   }
 
   render() {
