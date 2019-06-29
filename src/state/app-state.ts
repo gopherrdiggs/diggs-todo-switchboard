@@ -39,6 +39,8 @@ class AppStateActionController {
       if (!savedState) {
         throw new Error("No saved state");
       }
+
+      AppState = savedState;
     }
     catch (error) {
 
