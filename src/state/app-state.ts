@@ -1,5 +1,5 @@
 import { ITodoItemList, ITodoItem } from "../interfaces/app-interfaces";
-import { SO } from "./switchboard-operator";
+import { SB } from "./switchboard-operator";
 import { ToastService } from "../services/toast-service";
 import { Storage } from "../services/storage-service";
 
@@ -74,7 +74,7 @@ class AppStateActionController {
     AppState.incompleteTodos.items = [...AppState.incompleteTodos.items, item];
     AppState.incompleteTodos.count = AppState.incompleteTodos.items.length;
     // Execute element callbacks associated with action
-    await SO.executeElementCallbacksForStateAction(Actions.todoItemAdded);
+    await SB.executeElementCallbacksForStateAction(Actions.todoItemAdded);
 
     Storage.saveState(AppState);
   }
@@ -101,7 +101,7 @@ class AppStateActionController {
       AppState.completeTodos.items = Array.from(new Set(AppState.completeTodos.items));
       AppState.completeTodos.count = AppState.completeTodos.items.length;
       // Execute element callbacks associated with action
-      SO.executeElementCallbacksForStateAction(Actions.todoItemChecked);
+      SB.executeElementCallbacksForStateAction(Actions.todoItemChecked);
       ToastService.showSuccessToast("Well done!", "top");
     }
     else {
@@ -115,7 +115,7 @@ class AppStateActionController {
       AppState.incompleteTodos.items = Array.from(new Set([...AppState.incompleteTodos.items, item]));
       AppState.incompleteTodos.count = AppState.incompleteTodos.items.length;
       // Execute element callbacks associated with action
-      await SO.executeElementCallbacksForStateAction(Actions.todoItemUnchecked);
+      await SB.executeElementCallbacksForStateAction(Actions.todoItemUnchecked);
       ToastService.showSuccessToast("Okay, bringing it back.", "top")
     }
 
@@ -145,7 +145,7 @@ class AppStateActionController {
     AppState.completeTodos.count = AppState.completeTodos.items.length;
 
     // Execute element callbacks associated with action
-    await SO.executeElementCallbacksForStateAction(Actions.todoItemDeleted);
+    await SB.executeElementCallbacksForStateAction(Actions.todoItemDeleted);
 
     Storage.saveState(AppState);
   }

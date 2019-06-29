@@ -1,5 +1,5 @@
 import { Component, h, Element, Listen } from '@stencil/core';
-import { SO } from '../../state/switchboard-operator';
+import { SB } from '../../state/switchboard-operator';
 import { App, AppState, Actions } from '../../state/app-state';
 
 
@@ -21,7 +21,7 @@ export class AppRoot {
       [ Actions.todoItemAdded, 
         Actions.todoItemDeleted, 
         Actions.todoItemChecked, 
-        Actions.todoItemUnchecked ].map((n)=>SO.setCallbackForActions(n,
+        Actions.todoItemUnchecked ].map((n)=>SB.setCallbackForActions(n,
         ()=>list.setTodos(AppState.incompleteTodos.items), el.id));
 
       // Set initial component state
@@ -36,7 +36,7 @@ export class AppRoot {
       [ Actions.todoItemAdded, 
         Actions.todoItemDeleted, 
         Actions.todoItemChecked, 
-        Actions.todoItemUnchecked ].map((n)=>SO.setCallbackForActions(n,
+        Actions.todoItemUnchecked ].map((n)=>SB.setCallbackForActions(n,
         ()=>badge.setContent(AppState.incompleteTodos.count), el.id));
         
       // Set initial component state
@@ -49,7 +49,7 @@ export class AppRoot {
 
       // Actions => Methods
       [ Actions.todoItemDeleted, 
-        Actions.todoItemUnchecked ].map((n)=>SO.setCallbackForActions(n,
+        Actions.todoItemUnchecked ].map((n)=>SB.setCallbackForActions(n,
         ()=>list.setTodos(AppState.completeTodos.items), el.id));
 
       // Set initial component state
@@ -63,7 +63,7 @@ export class AppRoot {
       // Actions => Methods
       [ Actions.todoItemDeleted, 
         Actions.todoItemChecked, 
-        Actions.todoItemUnchecked ].map((n)=>SO.setCallbackForActions(n,
+        Actions.todoItemUnchecked ].map((n)=>SB.setCallbackForActions(n,
         ()=>badge.setContent(AppState.completeTodos.count), el.id));
       
       // Set initial component state
@@ -75,16 +75,16 @@ export class AppRoot {
 
     await App.initialize();
 
-    SO.setRootElement(this.el);
+    SB.setRootElement(this.el);
 
     // Event/s => Action mapping
-    [ 'onTodoItemCreated' ].map((n)=>SO.setHandlerForEvents(n,
+    [ 'onTodoItemCreated' ].map((n)=>SB.setHandlerForEvents(n,
       (ev) => App.handleTodoItemAdded(ev)));
       
-    [ 'onTodoItemCheckedChanged' ].map((n)=>SO.setHandlerForEvents(n,
+    [ 'onTodoItemCheckedChanged' ].map((n)=>SB.setHandlerForEvents(n,
       (ev) => App.handleTodoItemCheckedChanged(ev)));
 
-    [ 'onTodoItemDeleted' ].map((n)=>SO.setHandlerForEvents(n,
+    [ 'onTodoItemDeleted' ].map((n)=>SB.setHandlerForEvents(n,
       (ev) => App.handleTodoItemDeleted(ev)));
 
   }

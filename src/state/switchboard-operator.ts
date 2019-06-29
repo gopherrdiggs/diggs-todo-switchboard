@@ -50,4 +50,4 @@ class SwitchboardController {
 
 }
 
-export const SO = new SwitchboardController();
+export const SB = new SwitchboardController();
