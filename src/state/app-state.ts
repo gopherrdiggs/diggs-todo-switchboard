@@ -111,10 +111,8 @@ class AppStateActionController {
           return i.id != item.id;
         });
       AppState.completeTodos.count = AppState.completeTodos.items.length;
-      // Add item to incomplete items list
-      AppState.incompleteTodos.items = [...AppState.incompleteTodos.items, item];
-      // Ensure no duplicates exist
-      AppState.incompleteTodos.items = Array.from(new Set(AppState.incompleteTodos.items));
+      // Add item to incomplete items list ensuring no duplicates exist
+      AppState.incompleteTodos.items = Array.from(new Set([...AppState.incompleteTodos.items, item]));
       AppState.incompleteTodos.count = AppState.incompleteTodos.items.length;
       // Execute element callbacks associated with action
       await SO.executeElementCallbacksForStateAction(Actions.todoItemUnchecked);
@@ -145,6 +143,7 @@ class AppStateActionController {
         return i.id != item.id;
       });
     AppState.completeTodos.count = AppState.completeTodos.items.length;
+
     // Execute element callbacks associated with action
     await SO.executeElementCallbacksForStateAction(Actions.todoItemDeleted);
 

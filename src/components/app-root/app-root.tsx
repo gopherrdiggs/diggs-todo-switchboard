@@ -37,7 +37,7 @@ export class AppRoot {
         Actions.todoItemDeleted, 
         Actions.todoItemChecked, 
         Actions.todoItemUnchecked ].map((n)=>SO.setCallbackForActions(n,
-        () => badge.setContent(AppState.incompleteTodos.count), el.id));
+        ()=>badge.setContent(AppState.incompleteTodos.count), el.id));
         
       // Set initial component state
       badge.setContent(AppState.incompleteTodos.count);
@@ -64,9 +64,8 @@ export class AppRoot {
       [ Actions.todoItemDeleted, 
         Actions.todoItemChecked, 
         Actions.todoItemUnchecked ].map((n)=>SO.setCallbackForActions(n,
-        () => badge.setContent(AppState.completeTodos.count), el.id));
-        
-        
+        ()=>badge.setContent(AppState.completeTodos.count), el.id));
+      
       // Set initial component state
       badge.setContent(AppState.completeTodos.count);
     }
@@ -104,7 +103,7 @@ export class AppRoot {
     
     if (this.switchboard.hasOwnProperty(element.id)) {
 
-      console.log(`%c Get config for element: ${element.id}`, 'background: #222; color: blue');
+      console.log(`%c Get config for element: ${element.id}`, 'background-color: #222; color: blue');
       this.switchboard[element.id](element);
     }
   }
@@ -117,13 +116,13 @@ export class AppRoot {
       console.log('Event does not contain relatedNode property.');
     };
 
-    const element = event.relatedNode;
+    // const element = event.relatedNode;
     
-    if (this.switchboard.hasOwnProperty(element.id)) {
+    // if (this.switchboard.hasOwnProperty(element.id)) {
 
-      // Unregister element callbacks
-      SO.removeCallbacks(element.id);
-    }
+    //   // Unregister element callbacks
+    //   SO.removeCallbacks(element.id);
+    // }
   }
 
   render() {
