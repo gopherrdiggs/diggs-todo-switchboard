@@ -3,12 +3,12 @@ import { SB } from "./switchboard-operator";
 import { ToastService } from "../services/toast-service";
 import { Storage } from "../services/storage-service";
 
-interface IAppState {
+export interface IAppState {
   incompleteTodos: ITodoItemList,
   completeTodos: ITodoItemList
 }
 
-export var AppState = {} as IAppState;
+// export var AppState = {} as IAppState;
 
 export const enum Actions {
   todoItemAdded = 'todoItemAdded',
@@ -17,7 +17,22 @@ export const enum Actions {
   todoItemDeleted = 'todoItemDeleted'
 }
 
-class AppStateActionController {
+//TODO: Move away from using Singleton as it exposes itself to the entire app,
+// defeating the purpose of controlling state mutation and forcing updates through events
+export class AppStateController {
+
+  // public Actions = {
+  //   totoItemAdded: 'todoItemAdded',
+  //   todoItemChecked: 'todoItemChecked',
+  //   todoItemUnchecked: 'todoItemUnchecked',
+  //   todoItemDeleted: 'todoItemDeleted'
+  // }
+
+  private appState = {} as IAppState;
+
+  getAppState() {
+    return this.appState;
+  }
 
   async initialize() {
 
@@ -40,12 +55,12 @@ class AppStateActionController {
         throw new Error("No saved state");
       }
 
-      AppState = savedState;
+      this.appState = savedState;
     }
     catch (error) {
 
       console.log("loading default initial state");
-      AppState = {
+      this.appState = {
         incompleteTodos: {
           items: [
             { id: '09dsht', summary: 'Add a to-do', isComplete: false }
@@ -71,12 +86,12 @@ class AppStateActionController {
       throw new Error("Event did not contain expected item");
     }
 
-    AppState.incompleteTodos.items = [...AppState.incompleteTodos.items, item];
-    AppState.incompleteTodos.count = AppState.incompleteTodos.items.length;
+    this.appState.incompleteTodos.items = [...this.appState.incompleteTodos.items, item];
+    this.appState.incompleteTodos.count = this.appState.incompleteTodos.items.length;
     // Execute element callbacks associated with action
     await SB.executeElementCallbacksForStateAction(Actions.todoItemAdded);
 
-    Storage.saveState(AppState);
+    Storage.saveState(this.appState);
   }
 
   async handleTodoItemCheckedChanged(event: any) {
@@ -90,36 +105,36 @@ class AppStateActionController {
 
     if (item.isComplete) {
       // Remove item from incomplete items list
-      AppState.incompleteTodos.items = 
-        AppState.incompleteTodos.items.filter(i => {
+      this.appState.incompleteTodos.items = 
+        this.appState.incompleteTodos.items.filter(i => {
           return i.id != item.id;
         });
-      AppState.incompleteTodos.count = AppState.incompleteTodos.items.length;
+      this.appState.incompleteTodos.count = this.appState.incompleteTodos.items.length;
       // Add item to complete items list
-      AppState.completeTodos.items = [...AppState.completeTodos.items, item];
+      this.appState.completeTodos.items = [...this.appState.completeTodos.items, item];
       // Ensure no duplicates exist
-      AppState.completeTodos.items = Array.from(new Set(AppState.completeTodos.items));
-      AppState.completeTodos.count = AppState.completeTodos.items.length;
+      this.appState.completeTodos.items = Array.from(new Set(this.appState.completeTodos.items));
+      this.appState.completeTodos.count = this.appState.completeTodos.items.length;
       // Execute element callbacks associated with action
       SB.executeElementCallbacksForStateAction(Actions.todoItemChecked);
       ToastService.showSuccessToast("Well done!", "top");
     }
     else {
       // Remove item from complete items list
-      AppState.completeTodos.items =
-        AppState.completeTodos.items.filter(i => {
+      this.appState.completeTodos.items =
+        this.appState.completeTodos.items.filter(i => {
           return i.id != item.id;
         });
-      AppState.completeTodos.count = AppState.completeTodos.items.length;
+      this.appState.completeTodos.count = this.appState.completeTodos.items.length;
       // Add item to incomplete items list ensuring no duplicates exist
-      AppState.incompleteTodos.items = Array.from(new Set([...AppState.incompleteTodos.items, item]));
-      AppState.incompleteTodos.count = AppState.incompleteTodos.items.length;
+      this.appState.incompleteTodos.items = Array.from(new Set([...this.appState.incompleteTodos.items, item]));
+      this.appState.incompleteTodos.count = this.appState.incompleteTodos.items.length;
       // Execute element callbacks associated with action
       await SB.executeElementCallbacksForStateAction(Actions.todoItemUnchecked);
       ToastService.showSuccessToast("Okay, bringing it back.", "top")
     }
 
-    Storage.saveState(AppState);
+    Storage.saveState(this.appState);
   }
   
   async handleTodoItemDeleted(event: any) {
@@ -132,24 +147,24 @@ class AppStateActionController {
     }
 
     // Remove item from incomplete items list
-    AppState.incompleteTodos.items =
-      AppState.incompleteTodos.items.filter(i => {
+    this.appState.incompleteTodos.items =
+      this.appState.incompleteTodos.items.filter(i => {
         return i.id != item.id;
       });
-    AppState.incompleteTodos.count = AppState.incompleteTodos.items.length;
+    this.appState.incompleteTodos.count = this.appState.incompleteTodos.items.length;
     // Remove item from complete items list
-    AppState.completeTodos.items =
-      AppState.completeTodos.items.filter(i => {
+    this.appState.completeTodos.items =
+      this.appState.completeTodos.items.filter(i => {
         return i.id != item.id;
       });
-    AppState.completeTodos.count = AppState.completeTodos.items.length;
+    this.appState.completeTodos.count = this.appState.completeTodos.items.length;
 
     // Execute element callbacks associated with action
     await SB.executeElementCallbacksForStateAction(Actions.todoItemDeleted);
 
-    Storage.saveState(AppState);
+    Storage.saveState(this.appState);
   }
 
 }
 
-export const App = new AppStateActionController();
+// export const App = new AppStateController();

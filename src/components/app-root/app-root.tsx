@@ -1,6 +1,6 @@
 import { Component, h, Element, Listen } from '@stencil/core';
 import { SB } from '../../state/switchboard-operator';
-import { App, AppState, Actions } from '../../state/app-state';
+import { Actions, AppStateController } from '../../state/app-state';
 
 
 @Component({
@@ -11,81 +11,75 @@ export class AppRoot {
 
   @Element() el: HTMLAppRootElement;
 
+  appState: AppStateController = new AppStateController();
+
   switchboard = {
 
-    incompleteItemsList: (el) => {
-
-      const list = el as HTMLTodoListElement;
+    incompleteItemsList: (el: HTMLTodoListElement) => {
 
       // Actions => Methods
       [ Actions.todoItemAdded, 
         Actions.todoItemDeleted, 
         Actions.todoItemChecked, 
         Actions.todoItemUnchecked ].map((n)=>SB.setCallbackForActions(n,
-        ()=>list.setTodos(AppState.incompleteTodos.items), el.id));
+        ()=>el.setTodos(this.appState.getAppState().incompleteTodos.items), el.id));
 
       // Set initial component state
-      list.setTodos(AppState.incompleteTodos.items);
+      el.setTodos(this.appState.getAppState().incompleteTodos.items);
     },
 
-    incompleteItemsCount: (el) => {
-
-      const badge = el as HTMLToolbarBadgeElement;
+    incompleteItemsCount: (el: HTMLToolbarBadgeElement) => {
 
       // Actions => Methods
       [ Actions.todoItemAdded, 
         Actions.todoItemDeleted, 
         Actions.todoItemChecked, 
         Actions.todoItemUnchecked ].map((n)=>SB.setCallbackForActions(n,
-        ()=>badge.setContent(AppState.incompleteTodos.count), el.id));
+        ()=>el.setContent(this.appState.getAppState().incompleteTodos.count), el.id));
         
       // Set initial component state
-      badge.setContent(AppState.incompleteTodos.count);
+      el.setContent(this.appState.getAppState().incompleteTodos.count);
     },
 
-    completedItemsList: (el) => {
-
-      const list = el as HTMLTodoListElement;
+    completedItemsList: (el: HTMLTodoListElement) => {
 
       // Actions => Methods
       [ Actions.todoItemDeleted, 
         Actions.todoItemUnchecked ].map((n)=>SB.setCallbackForActions(n,
-        ()=>list.setTodos(AppState.completeTodos.items), el.id));
+        ()=>el.setTodos(this.appState.getAppState().completeTodos.items), el.id));
 
       // Set initial component state
-      list.setTodos(AppState.completeTodos.items);
+      el.setTodos(this.appState.getAppState().completeTodos.items);
     },
 
-    completedItemsCount: (el) => {
-
-      const badge = el as HTMLToolbarBadgeElement;
+    completedItemsCount: (el: HTMLToolbarBadgeElement) => {
 
       // Actions => Methods
       [ Actions.todoItemDeleted, 
         Actions.todoItemChecked, 
         Actions.todoItemUnchecked ].map((n)=>SB.setCallbackForActions(n,
-        ()=>badge.setContent(AppState.completeTodos.count), el.id));
+        ()=>el.setContent(this.appState.getAppState().completeTodos.count), el.id));
       
       // Set initial component state
-      badge.setContent(AppState.completeTodos.count);
+      el.setContent(this.appState.getAppState().completeTodos.count);
     }
   }
 
   async componentWillLoad() {
 
-    await App.initialize();
+    await this.appState.initialize();
 
     SB.setRootElement(this.el);
 
     // Event/s => Action mapping
     [ 'onTodoItemCreated' ].map((n)=>SB.setHandlerForEvents(n,
-      (ev) => App.handleTodoItemAdded(ev)));
+      (ev) => this.appState.handleTodoItemAdded(ev)));
       
     [ 'onTodoItemCheckedChanged' ].map((n)=>SB.setHandlerForEvents(n,
-      (ev) => App.handleTodoItemCheckedChanged(ev)));
+      (ev) => this.appState.handleTodoItemCheckedChanged(ev)));
 
     [ 'onTodoItemDeleted' ].map((n)=>SB.setHandlerForEvents(n,
-      (ev) => App.handleTodoItemDeleted(ev)));
+      (ev) => this.appState.handleTodoItemDeleted(ev)));
 
   }
 
